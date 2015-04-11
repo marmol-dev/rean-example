@@ -22,7 +22,8 @@ var fs = require('fs'),
     flash = require('connect-flash'),
     config = require('./config'),
     consolidate = require('consolidate'),
-    path = require('path');
+    path = require('path'),
+    chalk = require('chalk');
 
 module.exports = function (db) {
     // Initialize express app
@@ -97,24 +98,27 @@ module.exports = function (db) {
 		})
 	}));*/
 
-    app.use(session({
-        saveUninitialized: true,
-        resave: true,
-        secret: config.sessionSecret,
-        store: new RDBStore({
-            connectOptions: {
-                db: config.db.db,
-                hostname: config.db.hostname,
-                port: config.db.port
-            },
-            table: config.db.sessionTable,
-            sessionTimeout: 86400000,
-            flushInterval: 60000
-        })
-    }));
+    db.then(function (conn) {
+            app.use(session({
+                saveUninitialized: true,
+                resave: true,
+                secret: config.sessionSecret,
+                store: new RDBStore({
+                    connectOptions: {
+                        db: config.db.db,
+                        host: config.db.host,
+                        port: config.db.port
+                    },
+                    table: config.db.sessionTable,
+                    sessionTimeout: 86400000,
+                    flushInterval: 60000
+                })
+            }));
+        });
 
-        // use passport session
-        app.use(passport.initialize());
+
+    // use passport session
+    app.use(passport.initialize());
     app.use(passport.session());
 
     // connect flash for flash messages

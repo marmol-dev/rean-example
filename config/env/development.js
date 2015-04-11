@@ -2,8 +2,8 @@
 
 module.exports = {
 	db: {
-        hostname: 'localhost',
-        port: '29015',
+        host: '127.0.0.1',
+        port: '28015',
         db: 'rean',
         sessionTable: 'session'
     },
