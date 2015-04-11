@@ -1,7 +1,12 @@
 'use strict';
 
 module.exports = {
-	db: 'mongodb://localhost/rean-dev',
+	db: {
+        hostname: 'localhost',
+        port: '29015',
+        db: 'rean',
+        sessionTable: 'session'
+    },
 	app: {
 		title: 'REAN - Development Environment'
 	},
