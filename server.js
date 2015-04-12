@@ -13,8 +13,15 @@ var init = require('./config/init')(),
  * Please note that the order of loading is important.
  */
 
+var db = mongoose.connect(config.mongoDB, function (err) {
+    if (err) {
+        console.error(chalk.red('Could not connect to mongo'));
+        console.log(chalk.red(err));
+    }
+});
+
 // Bootstrap db connection
-var db = require('./config/db').start();
+/*var db = require('./config/db').start();
 
 db.then(function(){
   console.log(chalk.black('RethinkDB running on port ' + config.db.port));
@@ -22,7 +29,7 @@ db.then(function(){
 .error(function (err) {
     console.error(chalk.red('Could not connect to RethinkDB!'));
     console.log(chalk.red(err));
-});
+});*/
 
 // Init the express application
 var app = require('./config/express')(db);
