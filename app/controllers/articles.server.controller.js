@@ -14,9 +14,10 @@ var mongoose = require('mongoose'),
  */
 exports.create = function (req, res) {
     var article = new Article(req.body);
-    article.user = req.user;
+    article.userId = req.user.id;
 
     article.save(function (err) {
+        console.log('articles.controller', 'create', 'save', 'err', err);
         if (err) {
             return res.status(400).send({
                 message: errorHandler.getErrorMessage(err)
@@ -41,6 +42,9 @@ exports.update = function (req, res) {
     var article = req.article;
 
     article = _.extend(article, req.body);
+    article.userId = req.article.user.id;
+
+    console.log('articles.controller', 'update', 'article', article);
 
     article.save(function (err) {
         if (err) {
@@ -91,15 +95,18 @@ exports.list = function (req, res) {
  * Article middleware
  */
 exports.articleByID = function (req, res, next, id) {
+    console.log('articles.controller', 'byId', 'id', id);
     Article.get(id)
         .getJoin()
         .run()
         .then(function (article) {
             if (!article) return next(new Error('Failed to load article ' + id));
             req.article = article;
+            console.log('todo bien');
             next();
         })
         .error(function (err) {
+            console.error('articles.controller', 'byId', 'err', err);
             return next(err);
         });
 };

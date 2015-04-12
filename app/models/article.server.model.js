@@ -8,19 +8,27 @@ var mongoose = require('mongoose'),
     config = require('../../config/config'),
     thinky = require('thinky')(config.db),
     r = thinky.r,
-    type = thinky.type;
+    type = thinky.type,
+    User = require('./user.server.model');
 
 /**
  * Article Schema
  */
 
 var Article = thinky.createModel('articles', {
-    created: type.date().default(Date.now),
+    created: type.date().optional().allowNull().default(Date.now),
     title: type.string().default(''),
     content: type.string().default(''),
-    user: type.string()
+    userId: type.string()
 }, {
 
 });
+
+Article.pre('save', function(next){
+    this.created = new Date(this.created);
+    next();
+});
+
+Article.belongsTo(User, 'user', 'userId', 'id');
 
 module.exports = Article;

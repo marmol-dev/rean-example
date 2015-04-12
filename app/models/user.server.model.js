@@ -53,6 +53,10 @@ User.pre('save', function (next) {
         this.created = new Date(this.created);
     }
 
+    if(this.updated){
+        this.updated = new Date(this.updated);
+    }
+
     if (this.password && this.password.length > 6) {
         this.salt = (new Buffer(crypto.randomBytes(16).toString('base64'), 'base64')).toString();
         this.password = this.hashPassword(this.password);
