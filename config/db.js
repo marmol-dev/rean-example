@@ -25,13 +25,23 @@ module.exports.start = function () {
                         });
                 });
         })
+        .then(function (conn) {
+            return conn.close();
+        })
+        .then(function () {
+            return r.connect({
+                host: config.db.host,
+                port: config.db.port,
+                db: config.db.db
+            });
+        })
         //check the session table exists
         .then(function (conn) {
             return r.db(config.db.db)
                 .tableList()
                 .run(conn)
                 .then(function (tables) {
-                    if (tables.lastIndexOf(config.db.sessionTable)) {
+                    if (tables.lastIndexOf(config.db.sessionTable) > -1) {
                         return conn;
                     }
 

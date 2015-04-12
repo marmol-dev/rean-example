@@ -99,6 +99,7 @@ module.exports = function (db) {
 	}));*/
 
     db.then(function (conn) {
+            console.info('express.js', 'session', config.db.sessionTable);
             app.use(session({
                 saveUninitialized: true,
                 resave: true,
