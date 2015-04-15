@@ -88,7 +88,7 @@ module.exports = function (db) {
     app.use(cookieParser());
 
     // Express MongoDB session storage
-    app.use(session({
+    /*app.use(session({
 		saveUninitialized: true,
 		resave: true,
 		secret: config.sessionSecret,
@@ -96,26 +96,24 @@ module.exports = function (db) {
 			db: db.connection.db,
 			collection: config.sessionCollection
 		})
-	}));
+	}));*/
 
-    /*db.then(function (conn) {
-            console.info('express.js', 'session', config.db.sessionTable);
-            app.use(session({
-                saveUninitialized: true,
-                resave: true,
-                secret: config.sessionSecret,
-                store: new RDBStore({
-                    connectOptions: {
-                        db: config.db.db,
-                        host: config.db.host,
-                        port: config.db.port
-                    },
-                    table: config.db.sessionTable,
-                    sessionTimeout: 86400000,
-                    flushInterval: 60000
-                })
-            }));
-        });*/
+
+    app.use(session({
+        saveUninitialized: true,
+        resave: true,
+        secret: config.sessionSecret,
+        store: new RDBStore({
+            connectOptions: {
+                db: config.db.db,
+                host: config.db.host,
+                port: config.db.port
+            },
+            table: config.db.sessionTable,
+            sessionTimeout: 86400000,
+            flushInterval: 60000
+        })
+    }));
 
 
     // use passport session
