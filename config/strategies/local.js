@@ -15,11 +15,12 @@ module.exports = function () {
                 passwordField: 'password'
             },
             function (username, password, done) {
+                console.log('strategis/local', 'username', username, password);
                 User.getByUsername(username)
                     .run()
                     .then(function (user) {
 
-                        console.log('local.strategy', username, user);
+                        console.log('local.strategy', username, user, user.id);
 
                         if (!user) {
                             return done(null, false, {
@@ -36,7 +37,10 @@ module.exports = function () {
                         return done(null, user);
                     })
                     .error(function (err) {
-                        return done(err);
+                        //TODO: improve error categorization
+                        return done(null, false, {
+                            message: 'Unknown user or invalid password'
+                        });
                     });
             }
         )

@@ -12,3 +12,18 @@ Shutting down client connections...
 All client connections closed.
 Shutting down storage engine... (This may take a while if you had a lot of unflushed data in the writeback cache.)
 Storage engine shut down.
+Running rethinkdb 1.16.3~0trusty (GCC 4.8.2)...
+Running on Linux 3.16.0-33-generic x86_64
+Loading data from directory /home/martin/dev/rean/rethinkdb_data
+Listening for intracluster connections on port 29015
+Listening for client driver connections on port 28015
+Listening for administrative HTTP connections on port 8080
+Listening on addresses: 127.0.0.1, 127.0.1.1, ::1
+To fully expose RethinkDB on the network, bind to all addresses by running rethinkdb with the `--bind all` command line option.
+Server ready, "martin_sobremesa_l9o" 777b0de2-13d8-4674-9009-f0fdb66fa582
+Server got SIGTERM from pid 6101, uid 1000; shutting down...
+Shutting down client connections...
+All client connections closed.
+Shutting down storage engine... (This may take a while if you had a lot of unflushed data in the writeback cache.)
+Storage engine shut down.
+error: Failed to shutdown worker process: 'failed to send job function to worker'.  Killing it.

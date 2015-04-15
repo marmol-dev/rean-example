@@ -1,5 +1,8 @@
 'use strict';
 
+var util = require('util'),
+    chalk = require('chalk');
+
 /**
  * Get unique error field name
  */
@@ -23,6 +26,8 @@ var getUniqueErrorMessage = function(err) {
 exports.getErrorMessage = function(err) {
 	var message = '';
 
+    console.error(chalk.yellow('error', err, util.inspect(err), typeof err, Object.keys(err)));
+
 	if (err.code) {
 		switch (err.code) {
 			case 11000:
@@ -32,11 +37,13 @@ exports.getErrorMessage = function(err) {
 			default:
 				message = 'Something went wrong';
 		}
-	} else {
+	} else if (err.errors) {
 		for (var errName in err.errors) {
 			if (err.errors[errName].message) message = err.errors[errName].message;
 		}
-	}
+	} else if (err.message) {
+        return err.message;
+    }
 
 	return message;
 };

@@ -27,22 +27,25 @@ var validateLocalStrategyPassword = function (password) {
 
 
 var User = thinky.createModel('users', {
+    id: type.string(), //do not put here .required()
     firstName: type.string().validator(validateLocalStrategyProperty).default(''),
     lastName: type.string().validator(validateLocalStrategyProperty).default(''),
     displayName: type.string(),
-    email: type.string().email(),
+    email: type.string().email().required(),
     username: type.string().required(),
     password: type.string().validator(validateLocalStrategyPassword),
     salt: type.string(),
     provider: type.string(),
     providerData: type.object(),
     additionalProvidersData: type.object(),
-    roles: type.array().schema(type.string().enum('user', 'admin')).default(['user']),
+    roles: type.array().schema(type.string().enum('user', 'admin')).default(['user']).required(),
     updated: type.date().optional().allowNull(),
     created: type.date().optional().allowNull().default(Date.now),
     resetPasswordToken: type.string(),
     resetPasswordExpires: type.date()
-}, {});
+}, {
+    enforce_extra : 'remove'
+});
 
 /**
  * Hook a pre save method to hash the password
@@ -53,7 +56,7 @@ User.pre('save', function (next) {
         this.created = new Date(this.created);
     }
 
-    if(this.updated){
+    if (this.updated) {
         this.updated = new Date(this.updated);
     }
 

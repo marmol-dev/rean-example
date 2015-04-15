@@ -9,6 +9,11 @@ var mongoose = require('mongoose'),
     _ = require('lodash'),
     r = require('thinky')().r;
 
+exports.cleanInput = function(req, res, next){
+    delete req.body.created;
+    next();
+};
+
 /**
  * Create a article
  */
@@ -79,7 +84,13 @@ exports.delete = function (req, res) {
  */
 exports.list = function (req, res) {
     Article.orderBy(r.desc('create'))
-        .getJoin()
+        .getJoin({
+            user: {
+                _apply : function(user) {
+                    return user.pluck('id', 'firstName', 'lastName', 'displayName', 'username');
+                }
+            }
+        })
         .run()
         .then(function (articles) {
             res.json(articles);
@@ -95,14 +106,18 @@ exports.list = function (req, res) {
  * Article middleware
  */
 exports.articleByID = function (req, res, next, id) {
-    console.log('articles.controller', 'byId', 'id', id);
     Article.get(id)
-        .getJoin()
+        .getJoin({
+            user: {
+                _apply : function(user) {
+                    return user.pluck('id', 'firstName', 'lastName', 'displayName', 'username');
+                }
+            }
+        })
         .run()
         .then(function (article) {
             if (!article) return next(new Error('Failed to load article ' + id));
             req.article = article;
-            console.log('todo bien');
             next();
         })
         .error(function (err) {

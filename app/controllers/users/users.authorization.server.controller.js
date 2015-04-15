@@ -5,13 +5,14 @@
  */
 var _ = require('lodash'),
     mongoose = require('mongoose'),
-	User = require('../../models/user.server.model');
+    User = require('../../models/user.server.model');
 
 /**
  * User middleware
  */
 exports.userByID = function (req, res, next, id) {
     User.get(id)
+        .without(['salt', 'password'])
         .run()
         .then(function (user) {
             if (!user) return next(new Error('Failed to load User ' + id));

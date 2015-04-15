@@ -16,12 +16,13 @@ var mongoose = require('mongoose'),
  */
 
 var Article = thinky.createModel('articles', {
-    created: type.date().optional().allowNull().default(Date.now),
-    title: type.string().default(''),
-    content: type.string().default(''),
-    userId: type.string()
+    created: type.date().optional().default(Date.now),
+    title: type.string().required(),
+    content: type.string().required(),
+    userId: type.string().required(),
+    id: type.string() //do not put here .required()
 }, {
-
+    enforce_extra : 'remove'
 });
 
 Article.pre('save', function(next){
