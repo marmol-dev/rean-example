@@ -27,49 +27,7 @@ exports.cleanInput = function (req, res, next) {
  * Available
  * Check if the user is available (on signup and update)
  */
-exports.available = function (req, res, next) {
-    if (req.body.username && req.body.email) {
-        User.filter(
-                r.row('username').eq(req.body.username).or(
-                    r.row('email').eq(req.body.email)
-                )
-            )
-            .limit(2)
-            .run()
-            .then(function (users) {
-                console.log('users.authentication', 'available', 'users', users);
-                if (users.length > 0) {
-                    if (!req.user) {
-                        return res.status(400).send({
-                            message: 'There is another user with the same email or username'
-                        });
-                    } else {
-                        var differentId = _.any(users, function (user) {
-                            return user.id !== req.user.id;
-                        });
 
-                        if (differentId) {
-                            return res.status(400).send({
-                                message: 'There is another user with the same email or username'
-                            });
-                        } else {
-                            return next();
-                        }
-                    }
-                } else {
-                    return next();
-                }
-            })
-            .error(function (err) {
-                return res.status(500).send({
-                    message: errorHandler.getErrorMessage(err)
-                });
-            });
-    } else {
-        console.log('users.authentication.controller', 'available', 'No hay ni username ni password');
-        return next();
-    }
-};
 
 
 //TODO: create funcion notLogged
@@ -87,7 +45,23 @@ exports.signup = function (req, res) {
     user.displayName = user.firstName + ' ' + user.lastName;
 
     // Then save the user
-    user.save()
+    User.filter(
+            r.row('username').eq(req.body.username).or(
+                r.row('email').eq(req.body.email)
+            )
+        )
+        .limit(1)
+        .run()
+        .then(function (users) {
+            if (users.length > 0) {
+                throw new Error('There is another user with the same email or username');
+            } else {
+                return null;
+            }
+        })
+        .then(function () {
+            return user.save();
+        })
         .then(function (doc) {
 
             // Remove sensitive data before login
@@ -103,12 +77,13 @@ exports.signup = function (req, res) {
                 }
             });
         })
-        .error(function (err) {
+        .catch(function (err) {
             console.error('users.authentication.controller', 'signup', 'user.save', 'created', user.created, err);
             return res.status(400).send({
                 message: errorHandler.getErrorMessage(err)
             });
         });
+
 };
 
 /**
